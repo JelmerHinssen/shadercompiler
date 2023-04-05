@@ -56,7 +56,7 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
             while(value.size() > 0 && value[0] == ' '){
                 value = value.substr(1);
             }
-            string varName = ((char)(toupper(name[0])) + name.substr(1));
+            string varName = ((char)(toUpper(name[0])) + name.substr(1));
             string locName = "loc" + varName;
             uniformFunction.content.push_back(locName + " = getUniformLocation(\"" + name + "\");");
             string ctype, gltype;

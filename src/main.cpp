@@ -53,7 +53,6 @@ int main(int argc, char **args){
         modifiedFiles[tempfile] = hashRes;
     }
     modified.close();
-    //cout << "closed" << endl;
     fs::path directory = file;
     for (const auto& f : fs::directory_iterator(directory)) {
         string filename = f.path().filename().string();
