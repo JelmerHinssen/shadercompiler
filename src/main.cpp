@@ -18,9 +18,13 @@ int main(int argc, char **args){
     string srcDir;
     string headerDir;
     string subDir;
+    bool force = false;
     int c;
-    while((c = getopt(argc, args, "f:s:o:h:d:")) != -1){
+    while((c = getopt(argc, args, "f:s:o:h:d:F")) != -1){
         switch(c){
+        case 'F':
+            force = true;
+            break;
         case 'f':
             file = optarg;
             break;
@@ -62,7 +66,7 @@ int main(int argc, char **args){
             getline(filereader, filecontent, '\0');
             filereader.close();
             size_t fileHash = hash<string>{}(filecontent);
-            if(modifiedFiles.find(filename) == modifiedFiles.end()
+            if(force || modifiedFiles.find(filename) == modifiedFiles.end()
                || modifiedFiles[filename] != fileHash){
                 cout << "Compiling " << filename << endl;
                 cout << fileHash << " vs " << modifiedFiles[filename] << endl;

@@ -1,0 +1,1 @@
+bin/shadercompiler -f ../MCMKOpengl/shaderprograms/ -s SHIM_MCMKGL_SHADERS -o ../MCMKOpengl/src/ -h ../MCMKOpengl/src/ -d shaders/ -F
