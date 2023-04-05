@@ -19,7 +19,6 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
     parsedFile.parents.push_back("public ShaderProgram");
 
     bool vectorInclude = false, glmInclude = false;
-
     Function uniformFunction("void", "getAllLocations()", false, false, true);
     uniformFunction.content.push_back("start();");
     Function attribFunction("void", "bindAttributes()", false, false, true);
@@ -49,6 +48,11 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
             getInstance.content.push_back("}");
             getInstance.content.push_back("return instance.get();");
             parsedFile.staticFunctions.push_back(getInstance);
+            Function refreshFunction("void", "refresh()", false, false, false);
+            refreshFunction.content.push_back("instance = nullptr;");
+            refreshFunction.content.push_back("instance = std::make_unique<" + name + ">();");
+            refreshFunction.content.push_back("instance->create();");
+            parsedFile.staticFunctions.push_back(refreshFunction);
         }else if(opp == "@uniform"){
             string name, getterSetter, value, type;
             lineStream >> name >> getterSetter >> type >> ws;

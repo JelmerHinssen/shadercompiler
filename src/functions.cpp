@@ -8,10 +8,10 @@ using namespace std;
 
 string Function::getPrototype() const{
     stringstream prototype;
-    if(line){
+    if(line) {
         prototype << "inline ";
     }
-    if(virt){
+    if(virt) {
         prototype << "virtual ";
     }
     prototype << type << " ";
@@ -41,7 +41,7 @@ string Function::getImplementation(const std::string& parent) const{
     if(constant){
         implementation << " const";
     }
-    implementation << "{" << endl;
+    implementation << " {" << endl;
     for(unsigned int i = 0; i < content.size(); i++){
         implementation << "    " << content[i] << endl;
     }
@@ -69,7 +69,7 @@ string ParsedFile::getHeader() const{
             }
         }
     }
-    header << "{" << endl;
+    header << " {" << endl;
     header << "public:" << endl;
     for(unsigned int i = 0; i < constructors.size(); i++){
         header << "    " << constructors[i].getPrototype() << endl;
