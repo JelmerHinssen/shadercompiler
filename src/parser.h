@@ -5,7 +5,13 @@
 #include <vector>
 
 
+inline char toLower(char c) {
+    return (char) :: tolower(c);
+}
 
+inline char toUpper(char c) {
+    return (char) :: toupper(c);
+}
 
 class Function{
     public:

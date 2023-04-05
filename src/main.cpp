@@ -10,6 +10,7 @@
 
 #include "parser.h"
 using namespace std;
+namespace fs = std::filesystem;
 
 int main(int argc, char **args){
     string file;
@@ -17,7 +18,7 @@ int main(int argc, char **args){
     string srcDir;
     string headerDir;
     string subDir;
-    char c;
+    int c;
     while((c = getopt(argc, args, "f:s:o:h:d:")) != -1){
         switch(c){
         case 'f':
@@ -53,14 +54,11 @@ int main(int argc, char **args){
     }
     modified.close();
     //cout << "closed" << endl;
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir (file.c_str())) != NULL) {
-      /* print all the files and directories within directory */
-      while ((ent = readdir (dir)) != NULL) {
-        if(ent->d_name != string(".") && ent->d_name != string("..") && ent->d_name != string("shaders.modified")){
+    fs::path directory = file;
+    for (const auto& f : fs::directory_iterator(directory)) {
+        string filename = f.path().filename().string();
+        if (f.is_regular_file() && filename != "shaders.modified") {
             string filecontent;
-            string filename(ent->d_name);
             ifstream filereader(file + filename);
             getline(filereader, filecontent, '\0');
             filereader.close();
@@ -73,7 +71,7 @@ int main(int argc, char **args){
                 ParsedFile pfile = parse(file + filename, headerShield, srcDir, headerDir, subDir);
                 if(pfile.name != ""){
                     string lowername = pfile.name;
-                    transform(lowername.begin(), lowername.end(), lowername.begin(), ::tolower);
+                    transform(lowername.begin(), lowername.end(), lowername.begin(), toLower);
 
                     ofstream srcout(srcDir + subDir + lowername + ".cpp");
                     srcout << pfile.getSource();
@@ -87,27 +85,14 @@ int main(int argc, char **args){
                 cout << filename << " didn't change" << endl;
             }
         }
-      }
-      closedir (dir);
-    } else {
-      /* could not open directory */
-      perror (file.c_str());
-      return EXIT_FAILURE;
+
     }
     ofstream wmodified(file + "shaders.modified");
-    if ((dir = opendir (file.c_str())) != NULL) {
-      /* print all the files and directories within directory */
-      while ((ent = readdir (dir)) != NULL) {
-        if(ent->d_name != string(".") && ent->d_name != string("..") && ent->d_name != string("shaders.modified")){
-            string filename(ent->d_name);
+    for (const auto& f : fs::directory_iterator(directory)) {
+        string filename = f.path().filename().string();
+        if (f.is_regular_file() && filename != "shaders.modified") {
             wmodified << filename << " " << modifiedFiles[filename] << endl;
         }
-      }
-      closedir (dir);
-    } else {
-      /* could not open directory */
-      perror (file.c_str());
-      return EXIT_FAILURE;
     }
     wmodified.close();
 }

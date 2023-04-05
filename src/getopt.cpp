@@ -1,7 +1,7 @@
 // src: https://gist.github.com/superwills/5815344
 
 #include "getopt.h" // make sure you construct the header file as dictated above
-
+#pragma warning(disable:4706)
 /*
 * Copyright (c) 1987, 1993, 1994
 *      The Regents of the University of California.  All rights reserved.

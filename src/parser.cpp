@@ -7,14 +7,6 @@
 
 using namespace std;
 
-char toLower(char c) {
-    return (char) :: tolower(c);
-}
-
-char toUpper(char c) {
-    return (char) :: toupper(c);
-}
-
 ParsedFile parse(const std::string& filename, const std::string& headerShield,
            [[maybe_unused]] const std::string& srcOutput, [[maybe_unused]] const std::string& headerOutput,
            const std::string& subDir){
@@ -125,29 +117,29 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
             }
             if(getterSetter == "gs" || getterSetter == "s"){
                 if(!array){
-                    Function setter("void", "set" + varName + "(" + ctype + " " + name + ")", false, !matrix && !array, false);
+                    Function setter("void", "set" + varName + "(" + ctype + " " + name + "_)", false, !matrix && !array, false);
                     if(primitive){
-                        setter.content.push_back("glUniform" + gltype + "(" + locName + ", " + name + ");");
+                        setter.content.push_back("glUniform" + gltype + "(" + locName + ", " + name + "_);");
                     }else if(!matrix){
                         string valuestr;
                         for(int i = 0; i < vecsize; i++){
-                            valuestr += name + "[" + to_string(i) + "]" + (i < vecsize - 1 ? ", " : "");
+                            valuestr += name + "_[" + to_string(i) + "]" + (i < vecsize - 1 ? ", " : "");
                         }
                         setter.content.push_back("glUniform" + gltype + "(" + locName + ", " + valuestr + ");");
                     }else{
-                        setter.content.push_back("glUniform" + gltype + "v(" + locName + ", 1, false, glm::value_ptr(" + name + "));");
+                        setter.content.push_back("glUniform" + gltype + "v(" + locName + ", 1, false, glm::value_ptr(" + name + "_));");
                     }
                     if(getterSetter == "gs"){
-                        setter.content.push_back("this->" + name + " = " + name + ";");
+                        setter.content.push_back("this->" + name + " = " + name + "_;");
                     }
                     parsedFile.publicFunctions.push_back(setter);
                 }else{
-                    Function setter("void", "set" + varName + "(" + ctype + " " + name + ")", false, false, false);
-                    setter.content.push_back("glUniform" + gltype + "(" + locName + ", " + name + ".size() / "
-                                              + to_string(vecsize) + ", &" + name + "[0]);");
+                    Function setter("void", "set" + varName + "(" + ctype + " " + name + "_)", false, false, false);
+                    setter.content.push_back("glUniform" + gltype + "(" + locName + ", " + name + "_.size() / "
+                                              + to_string(vecsize) + ", &" + name + "_[0]);");
 
                     if(getterSetter == "gs"){
-                        setter.content.push_back("this->" + name + " = " + name + ";");
+                        setter.content.push_back("this->" + name + " = " + name + "_;");
                     }
                     parsedFile.publicFunctions.push_back(setter);
                 }
