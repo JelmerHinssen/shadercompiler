@@ -49,9 +49,14 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
             getInstance.content.push_back("return instance.get();");
             parsedFile.staticFunctions.push_back(getInstance);
             Function refreshFunction("void", "refresh()", false, false, false);
-            refreshFunction.content.push_back("instance = nullptr;");
-            refreshFunction.content.push_back("instance = std::make_unique<" + name + ">();");
-            refreshFunction.content.push_back("instance->create();");
+            refreshFunction.content.push_back("auto old = instance.release();");
+            refreshFunction.content.push_back("try {");
+            refreshFunction.content.push_back("    instance = nullptr;");
+            refreshFunction.content.push_back("    instance = std::make_unique<" + name + ">();");
+            refreshFunction.content.push_back("    instance->create();");
+            refreshFunction.content.push_back("} catch(std::runtime_error&) {");
+            refreshFunction.content.push_back("    instance.reset(old);");
+            refreshFunction.content.push_back("}");
             parsedFile.staticFunctions.push_back(refreshFunction);
         }else if(opp == "@uniform"){
             string name, getterSetter, value, type;
