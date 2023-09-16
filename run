@@ -1,1 +1,1 @@
-bin/shadercompiler -f ../MCMKOpengl/shaderprograms/ -s MCMKGL_SHADERS -o ../MCMKOpengl/src/ -h ../MCMKOpengl/src/ -d shaders/ -F
+bin/shadercompiler -f ../MCMKOpengl/shaderprograms/ -s MCMKGL_SHADERS -o ../MCMKOpengl/src/ -h ../MCMKOpengl/src/ -d shaders/ -F "$@"

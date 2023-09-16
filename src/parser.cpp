@@ -14,14 +14,20 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
     string line;
     ParsedFile parsedFile;
     parsedFile.headerIncludes.push_back("\"" + subDir + "shaderprogram.h\"");
+    parsedFile.sourceIncludes.push_back("\"" + subDir + "shaderprogram_impl.h\"");
+    parsedFile.headerIncludes.push_back("\"inspector.h\"");
+    parsedFile.sourceIncludes.push_back("<string>");
     cout << "\"" << subDir << "shaderprogram.h\"" << endl;
     parsedFile.headerIncludes.push_back("<memory>");
     parsedFile.parents.push_back("public ShaderProgram");
+    parsedFile.parents.push_back("public Inspector");
 
     bool vectorInclude = false, glmInclude = false;
     Function uniformFunction("void", "getAllLocations()", false, false, true);
     uniformFunction.content.push_back("start();");
     Function attribFunction("void", "bindAttributes()", false, false, true);
+    Function inspectFunction("void", "registerAll()", false, false, true);
+    inspectFunction.content.push_back("using namespace std::literals;");
     while(getline(input, line), line.size() > 0){
         stringstream lineStream(line);
         string opp;
@@ -155,6 +161,18 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
                     parsedFile.publicFunctions.push_back(setter);
                 }
             }
+            if (getterSetter == "gs") {
+                if (!array) {
+                    if (type == "int" || type == "uint") {
+                        inspectFunction.content.push_back("RegisterUniform(" + name + ", " + varName  + ", int);");
+                    } else if (type == "float") {
+                        inspectFunction.content.push_back("RegisterUniform(" + name + ", " + varName  + ", float);");
+                    } else if (!primitive && type[0] == 'v') {
+                        inspectFunction.content.push_back("RegisterUniformv(" + name + ", " + varName  + ", " + to_string(vecsize) + ");");
+                        parsedFile.privateMembers.push_back({"Inspector", name + "_inspector", ""});
+                    }
+                }
+            }
 
             parsedFile.privateMembers.push_back({"unsigned int", locName, ""});
         }else if(opp == "@attribute"){
@@ -239,6 +257,7 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
     }
     parsedFile.protectedFunctions.push_back(uniformFunction);
     parsedFile.protectedFunctions.push_back(attribFunction);
+    parsedFile.protectedFunctions.push_back(inspectFunction);
     input.close();
     return parsedFile;
 }

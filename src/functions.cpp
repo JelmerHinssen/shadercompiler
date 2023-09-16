@@ -63,7 +63,7 @@ string ParsedFile::getHeader() const{
     if(parents.size() > 0){
         header << ": ";
         for(unsigned int i = 0; i < parents.size(); i++){
-            header << parents[0];
+            header << parents[i];
             if(i < parents.size() - 1){
                 header << ", ";
             }

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.14)
 include("beforetarget.cmake" OPTIONAL)
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/null.cpp " ")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/nullmain.cpp " ")
 file(GLOB SHADERCOMPILER_SRC
     "*.h"
     "*.cpp"
@@ -26,12 +27,15 @@ else()
 endif()
 
 add_library(shadercompiler_lib STATIC ${SHADERCOMPILER_SRC})
-add_executable(shadercompiler_run "main.cpp")
+add_executable(shadercompiler_run "main.cpp" ${CMAKE_CURRENT_BINARY_DIR}/nullmain.cpp)
 target_include_directories(shadercompiler_lib PUBLIC include)
 target_include_directories(shadercompiler_lib PRIVATE include/shadercompiler)
 target_include_directories(shadercompiler_run PRIVATE include/shadercompiler)
 target_link_libraries(shadercompiler_lib shadercompiler_options ${all_libraries})
 target_link_libraries(shadercompiler_run shadercompiler_lib shadercompiler_options)
+add_custom_command(TARGET shadercompiler_lib
+     POST_BUILD
+     COMMAND ${CMAKE_COMMAND} -E touch_nocreate ${CMAKE_CURRENT_BINARY_DIR}/nullmain.cpp)
 
 set_target_properties(shadercompiler_run PROPERTIES OUTPUT_NAME shadercompiler)
 set_target_properties(shadercompiler_lib PROPERTIES OUTPUT_NAME shadercompiler)

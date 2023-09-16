@@ -18,12 +18,15 @@ int main(int argc, char **args){
     string srcDir;
     string headerDir;
     string subDir;
-    bool force = false;
+    bool force = false, sourceOnly = false;
     int c;
-    while((c = getopt(argc, args, "f:s:o:h:d:F")) != -1){
+    while((c = getopt(argc, args, "f:s:o:h:d:FS")) != -1){
         switch(c){
         case 'F':
             force = true;
+            break;
+        case 'S':
+            sourceOnly = true;
             break;
         case 'f':
             file = optarg;
@@ -79,9 +82,11 @@ int main(int argc, char **args){
                     ofstream srcout(srcDir + subDir + lowername + ".cpp");
                     srcout << pfile.getSource();
                     srcout.close();
-                    ofstream headerout(headerDir + subDir + lowername + ".h");
-                    headerout << pfile.getHeader();
-                    headerout.close();
+                    if (!sourceOnly) {
+                        ofstream headerout(headerDir + subDir + lowername + ".h");
+                        headerout << pfile.getHeader();
+                        headerout.close();
+                    }
                 }
                 modifiedFiles[filename] = fileHash;
             }else{
