@@ -28,7 +28,8 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
     Function attribFunction("void", "bindAttributes()", false, false, true);
     Function inspectFunction("void", "registerAll()", false, false, true);
     inspectFunction.content.push_back("using namespace std::literals;");
-    while(getline(input, line), line.size() > 0){
+    while(getline(input, line)){
+        if (line.empty()) continue;
         stringstream lineStream(line);
         string opp;
         lineStream >> opp;
@@ -58,8 +59,10 @@ ParsedFile parse(const std::string& filename, const std::string& headerShield,
             refreshFunction.content.push_back("auto old = instance.release();");
             refreshFunction.content.push_back("try {");
             refreshFunction.content.push_back("    instance = nullptr;");
+            refreshFunction.content.push_back("    ShaderProgram::loadHeaders(\"shaders\");");
             refreshFunction.content.push_back("    instance = std::make_unique<" + name + ">();");
             refreshFunction.content.push_back("    instance->create();");
+            refreshFunction.content.push_back("    delete old;");
             refreshFunction.content.push_back("    return true;");
             refreshFunction.content.push_back("} catch(std::runtime_error&) {");
             refreshFunction.content.push_back("    instance.reset(old);");
