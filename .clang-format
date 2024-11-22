@@ -1,0 +1,13 @@
+{   
+    BasedOnStyle: Google,
+    UseTab: Never,
+    IndentWidth: 4,
+    TabWidth: 4,
+    DerivePointerAlignment: false,
+    PointerAlignment: Left,
+    ColumnLimit: 120,
+    SpaceAfterCStyleCast: true,
+    AlwaysBreakTemplateDeclarations: MultiLine,
+    BreakBeforeConceptDeclarations: Allowed,
+    RequiresClausePosition: SingleLine,
+}

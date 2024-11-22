@@ -58,7 +58,7 @@ private:
 
 };
 
-ParsedFile parse(const std::string& filename, const std::string& headerShield,
+std::pair<ParsedFile, ParsedFile> parse(const std::string& filename, const std::string& headerShield,
            const std::string& srcOutput, const std::string& headerOutput,
            const std::string& subDir);
 
